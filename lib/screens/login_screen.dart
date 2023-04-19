@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:productes_app/providers/login_form_provider.dart';
 import 'package:productes_app/ui/input_decorations.dart';

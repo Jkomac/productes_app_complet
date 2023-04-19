@@ -57,17 +57,7 @@ class _ProductScreenBody extends StatelessWidget {
                   top: 60,
                   right: 20,
                   child: IconButton(
-                    onPressed: () async {
-                      // Implementar funcionalitat de cercar imatge de la galeria
-                      final ImagePicker picker = ImagePicker();
-                      // Pick an image.
-                      //final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-                      // Capture a photo.
-                      final XFile? photo = await picker.pickImage(source: ImageSource.camera);
-                      //print(photo!.path);
-                      productService.updateSelectedImage(photo!.path);
-
-                    },
+                    onPressed: () => showOptionDialog(context),
                     icon: Icon(
                       Icons.camera_alt_outlined,
                       size: 30,
@@ -101,6 +91,49 @@ class _ProductScreenBody extends StatelessWidget {
                   }
                   productService.saveOrCreateProduct(productForm.tempProduct);
                 }),
+    );
+  }
+
+  // Metodo para mostrar un dialogo para la eleccion o captura de una nueva imagen
+  Future<dynamic> showOptionDialog(BuildContext context) async{
+    final ImagePicker picker = ImagePicker();
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'Where do you want to take the picture from?',
+                style: TextStyle(fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 15),
+              TextButton(
+                  onPressed: () async {
+                    final XFile? photo =
+                        await picker.pickImage(source: ImageSource.gallery);
+                    Navigator.pop(context);
+                    // En caso de que se elija una foto, actualizar la foto, en caso contrario, dejar la actual
+                    if (photo != null) productService.updateSelectedImage(photo.path);
+                  },
+                  child: const Text('Gallery')),
+              const SizedBox(height: 5),
+              TextButton(
+                  onPressed: () async {
+                    final XFile? photo =
+                        await picker.pickImage(source: ImageSource.camera);
+                    Navigator.pop(context);
+                    // En caso de que se haga una foto, actualizar la foto, en caso contrario, dejar la actual
+                    if (photo != null) productService.updateSelectedImage(photo.path);
+                  },
+                  child: const Text('Camera'))
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
